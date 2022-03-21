@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure TV</title>
+</head>
+<body>
+    <google-cast-launcher></google-cast-launcher>
+
+    <script type="module" src="index.js"></script>
+    <script>
+        const play = () => {
+            var castSession = cast.framework.CastContext.getInstance().getCurrentSession();
+            const metadata = new chrome.cast.media.TvShowMediaMetadata();
+            metadata.episode = 1;
+            metadata.images = [
+                "https://m.media-amazon.com/images/M/MV5BMTczMDEwNzY2Nl5BMl5BanBnXkFtZTYwNjg3NzA5._V1_.jpg"
+            ];
+            metadata.originalAirdate = "1999-07-05";
+            metadata.season = 2;
+            metadata.title = "Back To School";
+            const mediaInfo = new chrome.cast.media.MediaInfo(
+                "https://dghwarehousestrapi.blob.core.windows.net/dgh-warehouse-strapi/1-BackToSchool.m4v",
+                "video/mp4");
+            mediaInfo.metadata = metadata;
+            const request = new chrome.cast.media.LoadRequest(mediaInfo);
+            castSession.loadMedia(request)
+                .then(() => { 
+                    console.log('Load succeeded');
+                }).catch((err) => {
+                    console.log('Error code', err);
+                });
+        };
+
+        const init = () => {
+            cast.framework.CastContext.getInstance().setOptions({
+                receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID
+            });
+
+            const context = cast.framework.CastContext.getInstance();
+            context.addEventListener(cast.framework.CastContextEventType.SESSION_STATE_CHANGED, (event) => {
+                switch (event.sessionState) {
+                    case cast.framework.SessionState.SESSION_STARTED:
+                    case cast.framework.SessionState.SESSION_RESUMED:
+                        play();
+                        break;
+                    case cast.framework.SessionState.SESSION_ENDED:
+                        console.log('CastContext: CastSession disconnected');
+                        // Update locally as necessary
+                        break;
+                }
+            });
+        };
+
+        window['__onGCastApiAvailable'] = (isAvailable) => {
+          if (isAvailable) {
+            init();
+          }
+        };
+    </script>
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+</body>
+</html>

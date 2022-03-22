@@ -5,9 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Azure TV</title>
+    <style>
+        #launcher {
+            display: inline-block;
+            width: 200px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <google-cast-launcher></google-cast-launcher>
+    <google-cast-launcher id="launcher"></google-cast-launcher>
+
+    <div id="library"></div>
 
     <script type="module" src="index.js"></script>
     <script>
@@ -44,7 +53,8 @@
                 switch (event.sessionState) {
                     case cast.framework.SessionState.SESSION_STARTED:
                     case cast.framework.SessionState.SESSION_RESUMED:
-                        play();
+                        console.log('CastContext: CastSession started or resumed');
+                        // play();
                         break;
                     case cast.framework.SessionState.SESSION_ENDED:
                         console.log('CastContext: CastSession disconnected');

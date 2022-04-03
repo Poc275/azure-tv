@@ -1,0 +1,53 @@
+#backdrop {
+    clear: both;
+    height: 232px;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+#content {
+    padding: 0 6px;
+}
+
+#series {
+    list-style: none;
+    padding: 0;
+}
+
+#series li {
+    display: inline-block;
+    margin-right: 12px;
+}
+
+.episode {
+    display: inline-block;
+    width: calc(50% - 6px);
+    margin-right: 6px;
+    margin-bottom: 6px;
+    vertical-align: top;
+}
+
+.episode-still {
+    height: 200px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.episode-title {
+    font-weight: bold;
+}
+
+.play-btn {
+    position: relative;
+    top: 140px;
+    font-size: xx-large;
+    width: 60px;
+    height: 60px;
+    color: black;
+    border: 1px solid black;
+    background-color: white;
+    cursor: pointer;
+}

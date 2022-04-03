@@ -2,16 +2,18 @@
   "name": "azure-tv",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "start": "parcel index.html"
+    "start": "parcel ./*.html",
+    "build": "parcel build ./*.html"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "buffer": "^6.0.3",
     "parcel": "^2.3.2"
   },
   "dependencies": {
-    "@azure/msal-browser": "^2.22.1"
+    "@azure/msal-browser": "^2.22.1",
+    "@azure/storage-blob": "^12.9.0"
   }
 }

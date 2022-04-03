@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Azure TV</title>
     <link href="index.css" rel="stylesheet" />
+    <link href="show.css" rel="stylesheet" />
 </head>
 <body>
     <div id="header">
@@ -13,9 +14,18 @@
         <google-cast-launcher id="cast"></google-cast-launcher>
     </div>
 
-    <div id="library"></div>
+    <div id="backdrop"></div>
 
-    <script type="module" src="index.js"></script>
+    <div id="content">
+        <h1 id="title"></h1>
+        <p id="tagline"></p>
+        <p id="overview"></p>
+        <p id="total-episodes"></p>
+        <ol id="series"></ol>
+        <div id="episodes"></div>
+    </div>
+
+    <script type="module" src="show.js"></script>
     <script src="cast.js"></script>
     <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 </body>

@@ -1,4 +1,6 @@
 import * as msal from "@azure/msal-browser";
+import { BlobServiceClient } from "@azure/storage-blob";
+import db from './db.json';
 
 const msalConfig = {
     auth: {
@@ -10,7 +12,7 @@ const msalConfig = {
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
 // need to handle the redirect promise when using the redirect login instead of popup
-msalInstance.handleRedirectPromise().then((tokenResponse) => {
+msalInstance.handleRedirectPromise().then(async (tokenResponse) => {
     // Check if the tokenResponse is null
     // If the tokenResponse !== null, then you are coming back from a successful authentication redirect. 
     // If the tokenResponse === null, you are not coming back from an auth redirect.
@@ -19,72 +21,60 @@ msalInstance.handleRedirectPromise().then((tokenResponse) => {
         // const myAccounts = msalInstance.getAllAccounts();
         // console.log(myAccounts);
 
-        // TODO - Look up &delimiter=/&prefix=TV Shows/ to traverse the folders
-        // or just use the SDK to make life easier?
-        // Use metadata on blobs for show info?
-        // TODO - Blobs need public access to play via Chromecast - D'oh!
-        fetch("https://azuretv.blob.core.windows.net/media?restype=container&comp=list", {
-            headers: {
-                "x-ms-version": "2017-11-09",
-                "Authorization": `Bearer ${tokenResponse.accessToken}`
-            }
-        })
-        .then(res => res.text())
-        .then(data => {
-            // console.log(data);
-            const parser = new DOMParser();
-            const blobsXml = parser.parseFromString(data, "application/xml");
-            console.log(blobsXml);
-
-            const blobs = blobsXml.getElementsByTagName("Blob");
-            for (let i = 0; i < blobs.length; i++) {   
-                const path = blobs[i].getElementsByTagName("Name")[0].textContent;
-                // console.log(encodeURI(path));
-                console.log(`https://azuretv.blob.core.windows.net/media/${encodeURI(path)}`);
-                const episodeName = path.split('/')[3].split('-')[1].replace('.m4v', '');
-                const episodeNumber = path.split('/')[3].split('-')[0];
-
-                const mimeType = blobs[i].getElementsByTagName("Properties")[0]
-                    .getElementsByTagName("Content-Type")[0].textContent;
-                console.log(mimeType);
-
-                const libraryDiv = document.getElementById("library");
-                const showDiv = document.createElement("div");
-                const showNamePara = document.createElement("p");
-                showNamePara.textContent = episodeName;
-
-                const playBtn = document.createElement("button");
-                playBtn.innerHTML = "Play";
-                playBtn.onclick = () => {
-                    const castSession = cast.framework.CastContext.getInstance().getCurrentSession();
-                    const metadata = new chrome.cast.media.TvShowMediaMetadata();
-                    metadata.episode = episodeNumber;
-                    metadata.images = [
-                        "https://m.media-amazon.com/images/M/MV5BMTczMDEwNzY2Nl5BMl5BanBnXkFtZTYwNjg3NzA5._V1_.jpg"
-                    ];
-                    metadata.originalAirdate = "1999-07-05";
-                    metadata.season = 2;
-                    metadata.title = episodeName;
-                    const mediaInfo = new chrome.cast.media.MediaInfo(
-                        // `https://azuretv.blob.core.windows.net/media/${path}`,
-                        "https://dghwarehousestrapi.blob.core.windows.net/dgh-warehouse-strapi/1-BackToSchool.m4v",
-                        mimeType);
-                    mediaInfo.metadata = metadata;
-                    const request = new chrome.cast.media.LoadRequest(mediaInfo);
-                    castSession.loadMedia(request)
-                        .then(() => { 
-                            console.log('Load succeeded');
-                        }).catch((err) => {
-                            console.log('Error code', err);
-                        });
+        const tokenCredential = {
+            getToken() {
+                return {
+                    token: tokenResponse.accessToken,
+                    expiresOnTimestamp: Date.now() + 60 * 60 * 1000,
                 };
-
-                showDiv.appendChild(showNamePara);
-                showDiv.appendChild(playBtn);
-                libraryDiv.appendChild(showDiv);
             }
-        })
-        .catch(err => console.error(err));
+        };
+
+        const blobServiceClient = new BlobServiceClient("https://azuretv.blob.core.windows.net/", tokenCredential);
+        // console.log(blobServiceClient);
+
+        // Have to set a default version of the REST API later than 2011-08-18 to be able to stream (HTTP 206 Accept bytes)
+        // blobServiceClient.setProperties({
+        //     defaultServiceVersion: "2021-04-10"
+        // }).then(res => console.log("Set Properties response", res))
+        // .catch(err => console.error("Set Properties error", err));
+
+        // Check API default version
+        // blobServiceClient.getProperties()
+        //     .then(res => console.log("Get Properties response", res))
+        //     .catch(err => console.error("Get Properties error", err));
+
+        const containerClient = blobServiceClient.getContainerClient("media");
+
+        // get just TV shows
+        for await (const item of containerClient.listBlobsByHierarchy("/", { prefix: "TV/" })) {
+            // console.log(item);
+            if(item.kind === "prefix") {
+                // console.log(`\tBlobPrefix: ${item.name}`);
+                const tmdbId = item.name.split("/")[1];
+                const showData = db[tmdbId];
+
+                const img = document.createElement("img");
+                img.src = `https://image.tmdb.org/t/p/w92/${showData.poster_path}`;
+                img.alt = `${showData.name} poster`;
+
+                const title = document.createElement("p");
+                title.className = "poster-title";
+                title.textContent = showData.name;
+
+                const link = document.createElement("a");
+                link.href = `show.html?id=${showData.id}`;
+                link.appendChild(img);
+                link.appendChild(title);
+
+                const div = document.createElement("div");
+                div.className = "poster";
+                div.appendChild(link);
+                
+                const libraryDiv = document.getElementById("library");
+                libraryDiv.appendChild(div);
+            }
+        }
     } else {
         try {
             const loginRequest = {

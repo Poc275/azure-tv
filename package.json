@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "parcel ./*.html",
-    "build": "parcel build --public-url ./ ./*.html"
+    "build": "parcel build --public-url /azure-tv ./*.html"
   },
   "author": "",
   "license": "ISC",

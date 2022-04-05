@@ -5182,5 +5182,272 @@
             "poster_path": null,
             "season_number": 1
         }
+    },
+    "7837": {
+        "adult": false,
+        "backdrop_path": "/tefTKmctid6SSjpvtxksa5Us9J7.jpg",
+        "created_by": [
+            {
+                "id": 1240946,
+                "credit_id": "52578e7c760ee36aaa6af8e9",
+                "name": "Damian Lanigan",
+                "profile_path": null
+            }
+        ],
+        "episode_run_time": [
+            30
+        ],
+        "first_air_date": "2008-09-14",
+        "genres": [
+            {
+                "id": 35,
+                "name": "Comedy"
+            }
+        ],
+        "homepage": "",
+        "id": 7837,
+        "in_production": true,
+        "languages": [
+            "en"
+        ],
+        "last_air_date": "2008-10-12",
+        "last_episode_to_air": {
+            "air_date": "2008-10-12",
+            "episode_number": 6,
+            "id": 391832,
+            "name": "The Re-Launch",
+            "overview": "Lou persuades Danny and Shay to give the label another try and they set off in search of a new signing. Furious with the lads for giving up on the label, Lou draws up a list of unsigned bands and orders them to sign one. The lads blag a loan off Danny’s dad Dennis and hit the road. When the car breaks down in the middle of Pennines and they forget the band they were supposed to see it looks like the label is over again, but can Hebden Bridge five-piece The Pott Shrigleys restore their faith in music?",
+            "production_code": "",
+            "season_number": 1,
+            "still_path": null,
+            "vote_average": 0.0,
+            "vote_count": 0
+        },
+        "name": "Massive",
+        "next_episode_to_air": null,
+        "networks": [
+            {
+                "name": "BBC Three",
+                "id": 3,
+                "logo_path": "/qh5IQT9j5yNuxzVLC4v9DA5mPQO.png",
+                "origin_country": "GB"
+            }
+        ],
+        "number_of_episodes": 6,
+        "number_of_seasons": 1,
+        "origin_country": [
+            "GB"
+        ],
+        "original_language": "en",
+        "original_name": "Massive",
+        "overview": "Massive is a sitcom broadcast on digital channel BBC Three. It is set in Manchester and stars Ralf Little and Carl Rice as Danny and Shay, who leave their office jobs to set up a record label when Danny inherits £10,000 following the death of his grandmother. The series began airing on BBC Three on 14 September 2008.",
+        "popularity": 0.924,
+        "poster_path": "/fI1QZfzh0zeIowHEm9TW1wFa10v.jpg",
+        "production_companies": [],
+        "production_countries": [],
+        "seasons": [
+            {
+                "air_date": "2008-09-14",
+                "episode_count": 6,
+                "id": 17995,
+                "name": "Season 1",
+                "overview": "",
+                "poster_path": null,
+                "season_number": 1
+            }
+        ],
+        "spoken_languages": [
+            {
+                "english_name": "English",
+                "iso_639_1": "en",
+                "name": "English"
+            }
+        ],
+        "status": "Ended",
+        "tagline": "",
+        "type": "Scripted",
+        "vote_average": 0.0,
+        "vote_count": 0,
+        "keywords": {
+            "results": []
+        },
+        "season/1": {
+            "_id": "52578e7b760ee36aaa6af809",
+            "air_date": "2008-09-14",
+            "episodes": [
+                {
+                    "air_date": "2008-09-14",
+                    "episode_number": 1,
+                    "crew": [
+                        {
+                            "department": "Directing",
+                            "job": "Director",
+                            "credit_id": "52578e7b760ee36aaa6af825",
+                            "adult": false,
+                            "gender": 2,
+                            "id": 1220300,
+                            "known_for_department": "Directing",
+                            "name": "David Kerr",
+                            "original_name": "David Kerr",
+                            "popularity": 1.4,
+                            "profile_path": "/luSbXLwVBZCVxTA4DV4FPJOtpaz.jpg"
+                        }
+                    ],
+                    "guest_stars": [],
+                    "id": 391827,
+                    "name": "Creation of the Label",
+                    "overview": "The two boys set up a label headquarters and hold auditions. Aftrer a few rocky moments Shady Music make their first signing.",
+                    "production_code": "",
+                    "season_number": 1,
+                    "still_path": null,
+                    "vote_average": 0.0,
+                    "vote_count": 0
+                },
+                {
+                    "air_date": "2008-09-14",
+                    "episode_number": 2,
+                    "crew": [
+                        {
+                            "department": "Directing",
+                            "job": "Director",
+                            "credit_id": "52578e7b760ee36aaa6af825",
+                            "adult": false,
+                            "gender": 2,
+                            "id": 1220300,
+                            "known_for_department": "Directing",
+                            "name": "David Kerr",
+                            "original_name": "David Kerr",
+                            "popularity": 1.4,
+                            "profile_path": "/luSbXLwVBZCVxTA4DV4FPJOtpaz.jpg"
+                        }
+                    ],
+                    "guest_stars": [],
+                    "id": 391828,
+                    "name": "Recording The Single",
+                    "overview": "Danny and Shay's first signing HearKittyKitty isn't quite what they had in mind but Danny is certain that they have talent. The team go into the studio to record the group's first single.",
+                    "production_code": "",
+                    "season_number": 1,
+                    "still_path": null,
+                    "vote_average": 0.0,
+                    "vote_count": 0
+                },
+                {
+                    "air_date": "2008-09-21",
+                    "episode_number": 3,
+                    "crew": [
+                        {
+                            "department": "Directing",
+                            "job": "Director",
+                            "credit_id": "52578e7b760ee36aaa6af825",
+                            "adult": false,
+                            "gender": 2,
+                            "id": 1220300,
+                            "known_for_department": "Directing",
+                            "name": "David Kerr",
+                            "original_name": "David Kerr",
+                            "popularity": 1.4,
+                            "profile_path": "/luSbXLwVBZCVxTA4DV4FPJOtpaz.jpg"
+                        }
+                    ],
+                    "guest_stars": [],
+                    "id": 391829,
+                    "name": "The Music Video",
+                    "overview": "Danny and Sahy are over the moon when HearKittyKitty's song is played on Radio One. The group then demand that have a music video made.",
+                    "production_code": "",
+                    "season_number": 1,
+                    "still_path": null,
+                    "vote_average": 0.0,
+                    "vote_count": 0
+                },
+                {
+                    "air_date": "2008-09-28",
+                    "episode_number": 4,
+                    "crew": [
+                        {
+                            "department": "Directing",
+                            "job": "Director",
+                            "credit_id": "52578e7b760ee36aaa6af825",
+                            "adult": false,
+                            "gender": 2,
+                            "id": 1220300,
+                            "known_for_department": "Directing",
+                            "name": "David Kerr",
+                            "original_name": "David Kerr",
+                            "popularity": 1.4,
+                            "profile_path": "/luSbXLwVBZCVxTA4DV4FPJOtpaz.jpg"
+                        }
+                    ],
+                    "guest_stars": [],
+                    "id": 391830,
+                    "name": "The Photo Shoot",
+                    "overview": "When HearKittyKitty debut single enters the charts at the number 12 position the boys decide that the group needs a makeover to continue to climb the charts.",
+                    "production_code": "",
+                    "season_number": 1,
+                    "still_path": null,
+                    "vote_average": 0.0,
+                    "vote_count": 0
+                },
+                {
+                    "air_date": "2008-10-05",
+                    "episode_number": 5,
+                    "crew": [
+                        {
+                            "department": "Directing",
+                            "job": "Director",
+                            "credit_id": "52578e7b760ee36aaa6af825",
+                            "adult": false,
+                            "gender": 2,
+                            "id": 1220300,
+                            "known_for_department": "Directing",
+                            "name": "David Kerr",
+                            "original_name": "David Kerr",
+                            "popularity": 1.4,
+                            "profile_path": "/luSbXLwVBZCVxTA4DV4FPJOtpaz.jpg"
+                        }
+                    ],
+                    "guest_stars": [],
+                    "id": 391831,
+                    "name": "The Break Up",
+                    "overview": "Just when it seemed Danny and Shay's luck couldn't get any worse, American lawyer Tommy Sadowski appears in Manchester. He has been instructed by Eminem to sue Shady Music for using the name of his company. The lads can't even afford the rent on the office, so where are they going to find 123 million dollars?\n\nTo top it all off, Danny's record signing plan goes wrong and HearKittyKitty sack the lads. With no money and no contract to keep the girls, Danny and Shay quit the label and call time on their own friendship. Shay retreats to the sanctum of the Finnegan household, while Danny strikes up an unlikely friendship with Tommy.\n\nWhile Lou desperately tries to get Danny and Shay back together, Strange Pete has demons of his own. He has been asked on a reunion tour with the other 1990s Manc explosion bands, but is terrified of getting back on stage.",
+                    "production_code": "",
+                    "season_number": 1,
+                    "still_path": null,
+                    "vote_average": 0.0,
+                    "vote_count": 0
+                },
+                {
+                    "air_date": "2008-10-12",
+                    "episode_number": 6,
+                    "crew": [
+                        {
+                            "department": "Directing",
+                            "job": "Director",
+                            "credit_id": "52578e7b760ee36aaa6af825",
+                            "adult": false,
+                            "gender": 2,
+                            "id": 1220300,
+                            "known_for_department": "Directing",
+                            "name": "David Kerr",
+                            "original_name": "David Kerr",
+                            "popularity": 1.4,
+                            "profile_path": "/luSbXLwVBZCVxTA4DV4FPJOtpaz.jpg"
+                        }
+                    ],
+                    "guest_stars": [],
+                    "id": 391832,
+                    "name": "The Re-Launch",
+                    "overview": "Lou persuades Danny and Shay to give the label another try and they set off in search of a new signing. Furious with the lads for giving up on the label, Lou draws up a list of unsigned bands and orders them to sign one. The lads blag a loan off Danny’s dad Dennis and hit the road. When the car breaks down in the middle of Pennines and they forget the band they were supposed to see it looks like the label is over again, but can Hebden Bridge five-piece The Pott Shrigleys restore their faith in music?",
+                    "production_code": "",
+                    "season_number": 1,
+                    "still_path": null,
+                    "vote_average": 0.0,
+                    "vote_count": 0
+                }
+            ],
+            "name": "Season 1",
+            "overview": "",
+            "poster_path": null,
+            "season_number": 1
+        }
     }
 }

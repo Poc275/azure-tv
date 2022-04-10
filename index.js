@@ -1,6 +1,6 @@
 import * as msal from "@azure/msal-browser";
 import { BlobServiceClient } from "@azure/storage-blob";
-import db from './db.json';
+import { TableClient } from "@azure/data-tables";
 
 const msalConfig = {
     auth: {
@@ -25,13 +25,12 @@ msalInstance.handleRedirectPromise().then(async (tokenResponse) => {
             getToken() {
                 return {
                     token: tokenResponse.accessToken,
-                    expiresOnTimestamp: Date.now() + 60 * 60 * 1000,
+                    expiresOnTimestamp: (new Date(tokenResponse.expiresOn).getTime()),
                 };
             }
         };
 
         const blobServiceClient = new BlobServiceClient("https://azuretv.blob.core.windows.net/", tokenCredential);
-        // console.log(blobServiceClient);
 
         // Have to set a default version of the REST API later than 2011-08-18 to be able to stream (HTTP 206 Accept bytes)
         // blobServiceClient.setProperties({
@@ -46,13 +45,16 @@ msalInstance.handleRedirectPromise().then(async (tokenResponse) => {
 
         const containerClient = blobServiceClient.getContainerClient("media");
 
+        // initialise table storage client
+        const tableClient = new TableClient("https://azuretv.table.core.windows.net", "azuretv", tokenCredential);
+
         // get just TV shows
         for await (const item of containerClient.listBlobsByHierarchy("/", { prefix: "TV/" })) {
             // console.log(item);
             if(item.kind === "prefix") {
                 // console.log(`\tBlobPrefix: ${item.name}`);
                 const tmdbId = item.name.split("/")[1];
-                const showData = db[tmdbId];
+                const showData = await tableClient.getEntity("shows", tmdbId);
 
                 const img = document.createElement("img");
                 img.src = `https://image.tmdb.org/t/p/w92/${showData.poster_path}`;
@@ -63,7 +65,7 @@ msalInstance.handleRedirectPromise().then(async (tokenResponse) => {
                 title.textContent = showData.name;
 
                 const link = document.createElement("a");
-                link.href = `show.html?id=${showData.id}`;
+                link.href = `show.html?id=${showData.rowKey}`;
                 link.appendChild(img);
                 link.appendChild(title);
 

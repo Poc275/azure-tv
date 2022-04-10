@@ -1,6 +1,6 @@
 import * as msal from "@azure/msal-browser";
 import { BlobServiceClient } from "@azure/storage-blob";
-import db from './db.json';
+import { TableClient } from "@azure/data-tables";
 
 const msalConfig = {
     auth: {
@@ -21,13 +21,25 @@ const request = {
     loginHint: myAccounts[0].username
 };
 
+const getTokenCredential = (token) => {
+    return {
+        getToken() {
+            return {
+                token: token.accessToken,
+                expiresOnTimestamp: (new Date(token.expiresOn).getTime()),
+            };
+        }
+    };
+};
+
 // try and get access token silently
-msalInstance.acquireTokenSilent(silentRequest).then(tokenResponse => {
+msalInstance.acquireTokenSilent(silentRequest).then(async tokenResponse => {
     // console.log(tokenResponse);
+    const tableClient = new TableClient("https://azuretv.table.core.windows.net", "azuretv", getTokenCredential(tokenResponse));
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.has("id")) {
         const showId = urlParams.get("id");
-        const showInfo = db[showId];
+        const showInfo = await tableClient.getEntity("shows", showId);
         document.getElementById("backdrop").style.backgroundImage = showInfo.backdrop_path ? 
             `url(https://image.tmdb.org/t/p/w780/${showInfo.backdrop_path})` : 
             `url(https://image.tmdb.org/t/p/w780/${showInfo.poster_path})`;
@@ -35,7 +47,7 @@ msalInstance.acquireTokenSilent(silentRequest).then(tokenResponse => {
         document.getElementById("tagline").textContent = showInfo.tagline;
         document.getElementById("overview").textContent = showInfo.overview.split(".")[0];
         document.getElementById("total-episodes").textContent = `${showInfo.number_of_episodes} episodes`;
-        getEpisodes(tokenResponse.accessToken, showId);
+        getEpisodes(tokenResponse, showId, tableClient);
 
     } else {
         console.error("Show not found");
@@ -48,17 +60,8 @@ msalInstance.acquireTokenSilent(silentRequest).then(tokenResponse => {
     }
 });
 
-const getEpisodes = async (accessToken, showId) => {
-    const tokenCredential = {
-        getToken() {
-            return {
-                token: accessToken,
-                expiresOnTimestamp: Date.now() + 60 * 60 * 1000,
-            };
-        }
-    };
-
-    const blobServiceClient = new BlobServiceClient("https://azuretv.blob.core.windows.net/", tokenCredential);
+const getEpisodes = async (token, showId, tableClient) => {
+    const blobServiceClient = new BlobServiceClient("https://azuretv.blob.core.windows.net/", getTokenCredential(token));
     const containerClient = blobServiceClient.getContainerClient("media");
     const episodes = [];
 
@@ -66,11 +69,20 @@ const getEpisodes = async (accessToken, showId) => {
         // console.log(item);
         const blobClient = containerClient.getBlockBlobClient(item.name);
         const meta = (await blobClient.getProperties()).metadata;
-        episodes.push({
-            season: parseInt(meta.season),
-            episode: parseInt(meta.episode),
-            blob: item
-        });
+        try {
+            const episodeInfo = await tableClient.getEntity("episodes", `${showId}_${meta.season}_${meta.episode}`);
+            episodes.push({
+                season_number: episodeInfo.season_number,
+                episode_number: episodeInfo.episode_number,
+                name: episodeInfo.name,
+                overview: episodeInfo.overview,
+                still_path: episodeInfo.still_path,
+                air_date: episodeInfo.air_date,
+                blob: item
+            });
+        } catch(error) {
+            console.error(`Could not find information for season ${meta.season}, episode ${meta.episode}: ${error}`);
+        }
     }
 
     episodes.sort((a, b) => {
@@ -84,66 +96,52 @@ const getEpisodes = async (accessToken, showId) => {
     });
 
     // add series links
-    const series = [];
-    episodes.forEach(ep => {
-        if(series.indexOf(ep.season) === -1) {
-            series.push(ep.season);
-        }
-    });
-    
+    // const series = [];
+    // episodes.forEach(ep => {
+    //     if(series.indexOf(ep.season) === -1) {
+    //         series.push(ep.season);
+    //     }
+    // });
     // addSeriesLinks(series);
-    addEpisodes(episodes, showId);
+
+    addEpisodes(episodes);
 };
 
-const addSeriesLinks = (series) => {
-    series.sort().map(seriesNum => {
-        const seriesList = document.getElementById("series");
-        const seriesItem = document.createElement("li");
-        const seriesLink = document.createElement("a");
-        seriesLink.href = "#";
-        seriesLink.appendChild(seriesItem);
-        seriesLink.textContent = `Series ${seriesNum}`;
-        seriesItem.appendChild(seriesLink);
-        seriesList.appendChild(seriesItem);
-    });
-};
+// const addSeriesLinks = (series) => {
+//     series.sort().map(seriesNum => {
+//         const seriesList = document.getElementById("series");
+//         const seriesItem = document.createElement("li");
+//         const seriesLink = document.createElement("a");
+//         seriesLink.href = "#";
+//         seriesLink.appendChild(seriesItem);
+//         seriesLink.textContent = `Series ${seriesNum}`;
+//         seriesItem.appendChild(seriesLink);
+//         seriesList.appendChild(seriesItem);
+//     });
+// };
 
-const addEpisodes = (episodes, showId) => {
-    const showInfo = db[showId];
+const addEpisodes = (episodes) => {
     episodes.forEach(episode => {
-        const seasonInfo = showInfo[`season/${episode.season}`];
-        const episodeInfo = seasonInfo.episodes[episode.episode - 1];
-        // console.log(seasonInfo);
-        // console.log(episodeInfo);
-
         const episodeContainer = document.createElement("div");
         const episodeStill = document.createElement("div");
         episodeContainer.className = "episode";
         episodeStill.className = "episode-still";
-        let stillPath = "";
-        if(episodeInfo.still_path) {
-            stillPath = `https://image.tmdb.org/t/p/w185/${episodeInfo.still_path}`;
-        } else if(seasonInfo.poster_path) {
-            stillPath = `https://image.tmdb.org/t/p/w185/${seasonInfo.poster_path}`;
-        } else {
-            stillPath = `https://image.tmdb.org/t/p/w185/${showInfo.poster_path}`;
-        }
-        episodeStill.style.backgroundImage = `url(${stillPath})`;
+        episodeStill.style.backgroundImage = `url(https://image.tmdb.org/t/p/w185/${episode.still_path})`;
 
         const playButton = document.createElement("button");
         playButton.className = "play-btn";
         playButton.textContent = "▶";
         playButton.addEventListener("click", () => {
-            play(episode.blob, episodeInfo, stillPath);
+            play(episode.blob, episode);
         }, false);
         episodeStill.appendChild(playButton);
 
         const episodeTitle = document.createElement("p");
         episodeTitle.className = "episode-title";
-        episodeTitle.textContent = `Series ${episode.season}: ${episode.episode}. ${episodeInfo.name}`;
+        episodeTitle.textContent = `Series ${episode.season_number}: ${episode.episode_number}. ${episode.name}`;
 
         const episodeBio = document.createElement("p");
-        episodeBio.textContent = episodeInfo.overview.split(".")[0];
+        episodeBio.textContent = episode.overview.split(".")[0];
         
         episodeContainer.appendChild(episodeStill);
         episodeContainer.appendChild(episodeTitle);
@@ -152,12 +150,12 @@ const addEpisodes = (episodes, showId) => {
     });
 };
 
-const play = (blob, info, stillPath) => {
+const play = (blob, info) => {
     // console.log(blob, info);
     const castSession = cast.framework.CastContext.getInstance().getCurrentSession();
     const metadata = new chrome.cast.media.TvShowMediaMetadata();
     metadata.episode = info.episode_number;
-    metadata.images = [stillPath];
+    metadata.images = [info.still_path];
     metadata.originalAirdate = info.air_date;
     metadata.season = info.season_number;
     metadata.title = info.name;

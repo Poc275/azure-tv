@@ -86,10 +86,10 @@ const getEpisodes = async (token, showId, tableClient) => {
     }
 
     episodes.sort((a, b) => {
-        if(a.season < b.season) {
+        if(a.season_number < b.season_number) {
             return -1;
-        } else if(a.season === b.season) {
-            return a.episode - b.episode;
+        } else if(a.season_number === b.season_number) {
+            return a.episode_number - b.episode_number;
         } else {
             return 1;
         }
@@ -138,7 +138,10 @@ const addEpisodes = (episodes) => {
 
         const episodeTitle = document.createElement("p");
         episodeTitle.className = "episode-title";
-        episodeTitle.textContent = `Series ${episode.season_number}: ${episode.episode_number}. ${episode.name}`;
+        const titleText = episode.season_number === 0 ? 
+            `Extras: ${episode.name}` :
+            `Series ${episode.season_number}: ${episode.episode_number}. ${episode.name}`;
+        episodeTitle.textContent = titleText;
 
         const episodeBio = document.createElement("p");
         episodeBio.textContent = episode.overview.split(".")[0];
